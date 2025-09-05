@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gamer Hub - Proxy</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+
+    body {
+        margin: 0;
+        background-color: #001f3f; /* Deep blue background */
+        font-family: 'Courier Prime', monospace;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    #topBar {
+        display: flex;
+        padding: 15px;
+        background-color: #003366; /* Slightly lighter blue */
+        border-bottom: 3px solid #3399ff; /* Bright blue border */
+        align-items: center;
+        flex-wrap: wrap;
+        position: relative;
+    }
+
+    #urlInput {
+        flex: 1;
+        padding: 12px 15px;
+        font-size: 16px;
+        border: 2px solid #3399ff;
+        border-radius: 8px;
+        background-color: #002244;
+        color: #66ccff;
+        outline: none;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    #urlInput:focus {
+        border-color: #66ccff;
+        box-shadow: 0 0 8px #66ccff33;
+    }
+
+    .button {
+        margin-left: 10px;
+        padding: 12px 24px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    #goButton {
+        background-color: #3399ff;
+        color: #fff;
+    }
+
+    #goButton:hover {
+        background-color: #66ccff;
+        transform: scale(1.05);
+    }
+
+    /* Dropdown styles */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    #dropdownBtn {
+        background-color: #66ccff;
+        color: #fff;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s, transform 0.2s;
+        min-width: 100px;
+        text-align: center;
+    }
+
+    #dropdownBtn:hover {
+        background-color: #99ccff;
+        transform: scale(1.05);
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #fff;
+        min-width: 180px;
+        max-height: 200px;
+        overflow-y: auto;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        margin-top: 2px;
+        border-radius: 4px;
+    }
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-family: 'Courier Prime', monospace;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Show dropdown on click */
+    .dropdown.show .dropdown-content {
+        display: block;
+    }
+
+    #iframeContainer {
+        flex: 1;
+        overflow: hidden;
+    }
+
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+</style>
+</head>
+<body>
+<div id="topBar">
+    <input type="text" id="urlInput" placeholder="Enter URL" />
+    <button class="button" id="goButton">Go</button>
+
+    <!-- Dropdown menu -->
+    <div class="dropdown" id="optionsDropdown">
+        <button class="button" id="dropdownBtn">Options ▼</button>
+        <div class="dropdown-content" id="dropdownMenu">
+            <a href="#" id="homeOption">Home</a>
+            <a href="#" id="openInNewTab">Open in New Tab</a>
+        </div>
+    </div>
+</div>
+<div id="iframeContainer">
+    <iframe id="proxiedFrame" src="https://cap-any-embed.vercel.app/embed.html#https://capminiproxy.vercel.app"></iframe>
+</div>
+
+<script>
+    const homeURL = "https://capminiproxy.vercel.app";
+
+    // Function to add https:// if missing
+    function formatURL(url) {
+        url = url.trim();
+        if (!url) return '';
+        if (!/^https?:\/\//i.test(url)) {
+            url = 'https://' + url;
+        }
+        return url;
+    }
+
+    let latestFormattedURL = '';
+
+    function loadURL() {
+        const input = document.getElementById('urlInput').value.trim();
+
+        // Check for special command
+        if (input === '//start') {
+            latestFormattedURL = homeURL;
+            updateFrame();
+            return;
+        }
+
+        if (!input) return;
+
+        const formattedURL = formatURL(input);
+        latestFormattedURL = formattedURL;
+        updateFrame();
+    }
+
+    function updateFrame() {
+        const embedURL = "https://cap-any-embed.vercel.app/embed.html#" + latestFormattedURL;
+        document.getElementById('proxiedFrame').src = embedURL;
+    }
+
+    document.getElementById('goButton').addEventListener('click', loadURL);
+
+    document.getElementById('urlInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            loadURL();
+        }
+    });
+
+    // Dropdown toggle
+    document.getElementById('dropdownBtn').addEventListener('click', () => {
+        document.getElementById('optionsDropdown').classList.toggle('show');
+    });
+
+    // Close dropdown on outside click
+    window.addEventListener('click', (event) => {
+        const dropdown = document.getElementById('optionsDropdown');
+        if (!dropdown.contains(event.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // "Home" button
+    document.getElementById('homeOption').addEventListener('click', (e) => {
+        e.preventDefault();
+        latestFormattedURL = homeURL;
+        updateFrame();
+        document.getElementById('optionsDropdown').classList.remove('show');
+    });
+
+    // "Open in New Tab"
+    document.getElementById('openInNewTab').addEventListener('click', (e) => {
+        e.preventDefault();
+        if (latestFormattedURL) {
+            const embedURL = "https://cap-any-embed.vercel.app/embed.html#" + latestFormattedURL;
+            window.open(embedURL, "_blank");
+        } else {
+            alert("Enter a URL and click Go first!");
+        }
+        document.getElementById('optionsDropdown').classList.remove('show');
+    });
+</script>
+</body>
+</html>
