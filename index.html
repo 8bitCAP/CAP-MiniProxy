@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Gamer Hub - Proxy</title>
+<title>CAP_PocketProxy</title>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
 
@@ -25,6 +25,21 @@
         align-items: center;
         flex-wrap: wrap;
         position: relative;
+        gap: 15px;
+    }
+
+    /* Add h1 style for left-aligned inline logo/title */
+    #topBarTitle {
+        margin: 0;
+        margin-right: 18px;
+        font-size: 2rem;
+        font-family: 'Courier Prime', monospace;
+        color: #66ccff;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        user-select: none;
+        flex-shrink: 0;
+        line-height: 1.1;
     }
 
     #urlInput {
@@ -37,6 +52,7 @@
         color: #66ccff;
         outline: none;
         transition: border-color 0.3s, box-shadow 0.3s;
+        min-width: 0;
     }
 
     #urlInput:focus {
@@ -130,11 +146,43 @@
         height: 100%;
         border: none;
     }
+
+    @media (max-width: 900px) {
+        #topBarTitle {
+            font-size: 1.2rem;
+            margin-right: 12px;
+        }
+        #topBar {
+            gap: 7px;
+        }
+    }
+    @media (max-width: 700px) {
+        #topBar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 10px;
+            padding: 12px 5px;
+        }
+        #topBarTitle {
+            margin: 0 0 2px 0;
+        }
+        #urlInput {
+            width: 100%;
+        }
+        .button, #dropdownBtn {
+            width: 100%;
+            margin-left: 0;
+            margin-top: 7px;
+        }
+        .dropdown {
+            margin-left: 0;
+        }
+    }
 </style>
 </head>
 <body>
 <div id="topBar">
-    <h1>CAP_PocketProxy</h1>
+    <h1 id="topBarTitle">PocketProxy</h1>
     <input type="text" id="urlInput" placeholder="Enter URL" />
     <button class="button" id="goButton">Go</button>
 
