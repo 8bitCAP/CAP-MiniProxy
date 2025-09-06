@@ -5,13 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>CAP_PocketProxy</title>
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+
+    :root {
+        /* OG Colors from original */
+        --primary-bg: #001f3f;
+        --header-bg: #003366;
+        --accent: #3399ff;
+        --accent-hover: #66ccff;
+        --input-bg: #002244;
+        --input-border: #3399ff;
+        --input-focus: #66ccff;
+        --dropdown-bg: #fff;
+        --dropdown-hover: #f1f1f1;
+        --text-color: #ffffff;
+        --title-color: #66ccff;
+        --shadow: 0 2px 16px rgba(0,0,0,0.2);
+        --radius: 12px;
+        --transition: 0.2s cubic-bezier(.4,0,.2,1);
+    }
 
     body {
         margin: 0;
-        background-color: #001f3f; /* Deep blue background */
-        font-family: 'Courier Prime', monospace;
-        color: #ffffff;
+        background: var(--primary-bg);
+        font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+        color: var(--text-color);
         display: flex;
         flex-direction: column;
         height: 100vh;
@@ -19,119 +37,129 @@
 
     #topBar {
         display: flex;
-        padding: 15px;
-        background-color: #003366; /* Slightly lighter blue */
-        border-bottom: 3px solid #3399ff; /* Bright blue border */
+        gap: 18px;
+        padding: 18px 28px;
+        background: var(--header-bg);
+        border-bottom: 3px solid var(--accent);
         align-items: center;
-        flex-wrap: wrap;
         position: relative;
-        gap: 15px;
+        z-index: 2;
+        box-shadow: var(--shadow);
+        flex-wrap: wrap;
     }
 
-    /* Add h1 style for left-aligned inline logo/title */
     #topBarTitle {
-        margin: 0;
-        margin-right: 18px;
-        font-size: 2rem;
-        font-family: 'Courier Prime', monospace;
-        color: #66ccff;
+        font-size: 2.1rem;
         font-weight: 700;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.04em;
+        color: var(--title-color);
+        margin: 0;
         user-select: none;
+        font-family: 'Inter', Arial, sans-serif;
+        transition: color var(--transition);
         flex-shrink: 0;
         line-height: 1.1;
     }
 
     #urlInput {
         flex: 1;
-        padding: 12px 15px;
-        font-size: 16px;
-        border: 2px solid #3399ff;
-        border-radius: 8px;
-        background-color: #002244;
-        color: #66ccff;
+        padding: 13px 18px;
+        font-size: 1.05rem;
+        border: 2px solid var(--input-border);
+        border-radius: var(--radius);
+        background: var(--input-bg);
+        color: var(--accent-hover);
         outline: none;
-        transition: border-color 0.3s, box-shadow 0.3s;
+        box-shadow: none;
+        transition: border-color var(--transition), box-shadow var(--transition);
         min-width: 0;
     }
 
     #urlInput:focus {
-        border-color: #66ccff;
-        box-shadow: 0 0 8px #66ccff33;
+        border-color: var(--input-focus);
+        box-shadow: 0 0 10px var(--input-focus)66;
     }
 
     .button {
-        margin-left: 10px;
-        padding: 12px 24px;
-        font-size: 16px;
+        padding: 13px 28px;
+        font-size: 1rem;
         border: none;
-        border-radius: 8px;
+        border-radius: var(--radius);
         cursor: pointer;
-        transition: background-color 0.3s, transform 0.2s;
+        background: var(--accent);
+        color: #fff;
+        font-weight: 600;
+        box-shadow: 0 2px 6px #3399ff22;
+        transition: background var(--transition), transform var(--transition), box-shadow var(--transition), color var(--transition);
+        outline: none;
+    }
+
+    .button:active {
+        transform: scale(0.98);
     }
 
     #goButton {
-        background-color: #3399ff;
-        color: #fff;
+        background: var(--accent);
     }
 
-    #goButton:hover {
-        background-color: #66ccff;
-        transform: scale(1.05);
+    #goButton:hover, #dropdownBtn:hover {
+        background: var(--accent-hover);
+        color: var(--header-bg);
+        box-shadow: 0 4px 16px #66ccff33;
+        transform: scale(1.04);
     }
 
     /* Dropdown styles */
     .dropdown {
         position: relative;
         display: inline-block;
-        margin-left: 10px;
+        margin-left: 0px;
     }
 
     #dropdownBtn {
-        background-color: #66ccff;
+        background: var(--accent-hover);
         color: #fff;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s, transform 0.2s;
-        min-width: 100px;
+        min-width: 120px;
         text-align: center;
-    }
-
-    #dropdownBtn:hover {
-        background-color: #99ccff;
-        transform: scale(1.05);
     }
 
     .dropdown-content {
         display: none;
         position: absolute;
         right: 0;
-        background-color: #fff;
-        min-width: 180px;
-        max-height: 200px;
+        background: var(--dropdown-bg);
+        min-width: 200px;
+        box-shadow: var(--shadow);
+        z-index: 10;
+        margin-top: 8px;
+        border-radius: var(--radius);
+        overflow: hidden;
+        border: 1px solid var(--accent);
+        animation: dropdown-in 0.25s cubic-bezier(.4,0,.2,1);
+        max-height: 220px;
         overflow-y: auto;
-        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
-        margin-top: 2px;
-        border-radius: 4px;
+    }
+
+    @keyframes dropdown-in {
+        0% { opacity: 0; transform: translateY(-10px);}
+        100% { opacity: 1; transform: translateY(0);}
     }
 
     .dropdown-content a {
-        color: black;
-        padding: 12px 16px;
+        color: #222;
+        padding: 14px 22px;
         text-decoration: none;
         display: block;
-        font-family: 'Courier Prime', monospace;
+        font-family: 'Inter', Arial, sans-serif;
+        font-size: 1rem;
+        transition: background var(--transition), color var(--transition);
     }
 
     .dropdown-content a:hover {
-        background-color: #f1f1f1;
+        background: var(--dropdown-hover);
+        color: var(--accent-hover);
     }
 
-    /* Show dropdown on click */
     .dropdown.show .dropdown-content {
         display: block;
     }
@@ -139,59 +167,65 @@
     #iframeContainer {
         flex: 1;
         overflow: hidden;
+        border-radius: 0 0 var(--radius) var(--radius);
+        box-shadow: var(--shadow);
+        background: var(--input-bg);
     }
 
     iframe {
         width: 100%;
         height: 100%;
         border: none;
+        background: var(--input-bg);
+        border-radius: 0 0 var(--radius) var(--radius);
     }
 
+    /* Responsive */
     @media (max-width: 900px) {
-        #topBarTitle {
-            font-size: 1.2rem;
-            margin-right: 12px;
-        }
-        #topBar {
-            gap: 7px;
-        }
+        #topBarTitle { font-size: 1.4rem; }
+        #topBar { gap: 10px; padding: 13px 9px;}
+        .button, #dropdownBtn { padding: 11px 10px; font-size: 0.98rem; min-width: 90px;}
     }
     @media (max-width: 700px) {
         #topBar {
             flex-direction: column;
             align-items: stretch;
             gap: 10px;
-            padding: 12px 5px;
+            padding: 12px 4px;
         }
         #topBarTitle {
-            margin: 0 0 2px 0;
+            margin-bottom: 2px;
         }
-        #urlInput {
+        #urlInput, .button, #dropdownBtn {
             width: 100%;
         }
         .button, #dropdownBtn {
-            width: 100%;
-            margin-left: 0;
-            margin-top: 7px;
+            margin-top: 6px;
         }
-        .dropdown {
-            margin-left: 0;
-        }
+        .dropdown { margin-left: 0; }
+        .dropdown-content { right: auto; left: 0; min-width: 100%; }
+    }
+
+    /* Add subtle floating and fade-in for modern feel */
+    #topBar, #iframeContainer {
+        animation: fade-in 0.7s cubic-bezier(.4,0,.2,1);
+    }
+    @keyframes fade-in {
+        0% { opacity: 0; transform: translateY(-12px);}
+        100% { opacity: 1; transform: translateY(0);}
     }
 </style>
 </head>
 <body>
 <div id="topBar">
     <h1 id="topBarTitle">PocketProxy</h1>
-    <input type="text" id="urlInput" placeholder="Enter URL" />
+    <input type="text" id="urlInput" placeholder="Enter URL..." autocomplete="off"/>
     <button class="button" id="goButton">Go</button>
-
-    <!-- Dropdown menu -->
     <div class="dropdown" id="optionsDropdown">
         <button class="button" id="dropdownBtn">Options ▼</button>
         <div class="dropdown-content" id="dropdownMenu">
-            <a href="#" id="homeOption">Home</a>
-            <a href="#" id="openInNewTab">Open in New Tab</a>
+            <a href="#" id="homeOption">🏠 Home</a>
+            <a href="#" id="openInNewTab">🔗 Open in New Tab</a>
         </div>
     </div>
 </div>
@@ -202,7 +236,6 @@
 <script>
     const homeURL = "https://capminiproxy.vercel.app";
 
-    // Function to add https:// if missing
     function formatURL(url) {
         url = url.trim();
         if (!url) return '';
@@ -217,7 +250,6 @@
     function loadURL() {
         const input = document.getElementById('urlInput').value.trim();
 
-        // Check for special command
         if (input === '//start') {
             latestFormattedURL = homeURL;
             updateFrame();
@@ -245,12 +277,11 @@
         }
     });
 
-    // Dropdown toggle
-    document.getElementById('dropdownBtn').addEventListener('click', () => {
+    document.getElementById('dropdownBtn').addEventListener('click', (e) => {
+        e.stopPropagation();
         document.getElementById('optionsDropdown').classList.toggle('show');
     });
 
-    // Close dropdown on outside click
     window.addEventListener('click', (event) => {
         const dropdown = document.getElementById('optionsDropdown');
         if (!dropdown.contains(event.target)) {
@@ -258,7 +289,6 @@
         }
     });
 
-    // "Home" button
     document.getElementById('homeOption').addEventListener('click', (e) => {
         e.preventDefault();
         latestFormattedURL = homeURL;
@@ -266,7 +296,6 @@
         document.getElementById('optionsDropdown').classList.remove('show');
     });
 
-    // "Open in New Tab"
     document.getElementById('openInNewTab').addEventListener('click', (e) => {
         e.preventDefault();
         if (latestFormattedURL) {
